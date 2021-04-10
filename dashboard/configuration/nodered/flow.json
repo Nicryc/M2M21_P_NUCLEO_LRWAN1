@@ -1312,7 +1312,7 @@
         "type": "debug",
         "z": "176e4c9f.1fe43b",
         "name": "",
-        "active": true,
+        "active": false,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -1398,7 +1398,7 @@
         "type": "mqtt in",
         "z": "176e4c9f.1fe43b",
         "name": "Devices Rx App 100",
-        "topic": "application/98/device/e24f43fffe44c2cb/rx",
+        "topic": "application/81/device/e24f43fffe44c2c8/rx",
         "qos": "2",
         "datatype": "auto",
         "broker": "475864c9.5c678c",
@@ -1423,23 +1423,6 @@
         "wires": []
     },
     {
-        "id": "1ad5abf6.5f2d0c",
-        "type": "mqtt in",
-        "z": "176e4c9f.1fe43b",
-        "name": "Application Rx EMS LIG",
-        "topic": "application/98/device/e24f43fffe44c2cb/rx",
-        "qos": "2",
-        "datatype": "auto",
-        "broker": "475864c9.5c678c",
-        "x": 100,
-        "y": 340,
-        "wires": [
-            [
-                "cbebb845.774e68"
-            ]
-        ]
-    },
-    {
         "id": "552ae79a.da25b8",
         "type": "link in",
         "z": "6d63f30e.6b697c",
@@ -1452,8 +1435,7 @@
         "wires": [
             [
                 "65b29b10.ecee8c",
-                "2f6d6c88.6e92ac",
-                "d900e924.8cf148"
+                "2f6d6c88.6e92ac"
             ]
         ]
     },
@@ -1462,7 +1444,7 @@
         "type": "function",
         "z": "6d63f30e.6b697c",
         "name": "isTempSupTo",
-        "func": "if (msg.payload.object.temperatureSensor1 > 60.0) {\n    msg.payload.object.alertTemp = true;\n} else {\n    msg.paylaod.object.alertTemp = false;\n}\n\nreturn msg;",
+        "func": "if (msg.payload.object.temperatureSensor1 > 60.0) {\n    msg.payload.object.alertTemp = true;\n} else {\n    msg.payload.object.alertTemp = false;\n}\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -1471,7 +1453,7 @@
         "y": 560,
         "wires": [
             [
-                "f7511e3a.2645f8"
+                "95db50e5.4f774"
             ]
         ]
     },
@@ -1480,7 +1462,7 @@
         "type": "function",
         "z": "6d63f30e.6b697c",
         "name": "isButtonPressed",
-        "func": "if (msg.payload.object.digitalInput5 == 1) {\n    msg.payload.object.alertButton = true;\n} else {\n    msg.paylaod.object.alertButton = false;\n}\n\nreturn msg;",
+        "func": "if (msg.payload.object.digitalInput5 == 1) {\n    msg.payload.object.alertButton = true;\n} else {\n    msg.payload.object.alertButton = false;\n}\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -1489,7 +1471,7 @@
         "y": 380,
         "wires": [
             [
-                "f7511e3a.2645f8"
+                "95db50e5.4f774"
             ]
         ]
     },
@@ -1498,7 +1480,7 @@
         "type": "function",
         "z": "6d63f30e.6b697c",
         "name": "sendAlert",
-        "func": "if (msg.payload.alertTemp != undefined) {\n    if (msg.payload.alertTemp == true) {\n        msg.payload = {\n            \"alarm\": true\n        }\n    } else {\n        msg.payload = {\n            \"alarm\": false\n        }\n    }\n} else if (msg.payload.alertButton != undefined) {\n    if (msg.payload.alertButton == true) {\n        msg.payload = {\n            \"alarm\": true\n        }\n    } else {\n        msg.payload = {\n            \"alarm\": false\n        }\n    }\n} else {\n    msg.payload = {\n            \"alarm\": false\n        }\n}\n\nreturn msg;",
+        "func": "if (msg.payload.object.alertTemp == true || msg.payload.object.alertButton == true) {\n    msg.payload = {\n        \"alarm\": true\n    }\n} else {\n    msg.payload = {\n        \"alarm\": false\n    }\n}\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -1507,7 +1489,8 @@
         "y": 480,
         "wires": [
             [
-                "482749d3.1bdb9"
+                "482749d3.1bdb9",
+                "17742fc9.3ab178"
             ]
         ]
     },
@@ -1516,29 +1499,12 @@
         "type": "mqtt out",
         "z": "6d63f30e.6b697c",
         "name": "NicolasEndpoint",
-        "topic": "application/98/device/E24F43FFFE44C2CB/command/down",
+        "topic": "application/98/device/E24F43FFFE44C2C8/command/down",
         "qos": "",
         "retain": "",
         "broker": "475864c9.5c678c",
         "x": 1200,
         "y": 480,
-        "wires": []
-    },
-    {
-        "id": "d900e924.8cf148",
-        "type": "debug",
-        "z": "6d63f30e.6b697c",
-        "name": "",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 550,
-        "y": 460,
         "wires": []
     },
     {
@@ -1558,5 +1524,67 @@
                 "9925749c.2b32c"
             ]
         ]
+    },
+    {
+        "id": "17742fc9.3ab178",
+        "type": "debug",
+        "z": "6d63f30e.6b697c",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1150,
+        "y": 640,
+        "wires": []
+    },
+    {
+        "id": "95db50e5.4f774",
+        "type": "join",
+        "z": "6d63f30e.6b697c",
+        "name": "",
+        "mode": "custom",
+        "build": "merged",
+        "property": "payload.object",
+        "propertyType": "msg",
+        "key": "payload",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": false,
+        "timeout": "1",
+        "count": "",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 710,
+        "y": 480,
+        "wires": [
+            [
+                "f7511e3a.2645f8",
+                "22d682d4.c8dfa6"
+            ]
+        ]
+    },
+    {
+        "id": "22d682d4.c8dfa6",
+        "type": "debug",
+        "z": "6d63f30e.6b697c",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 890,
+        "y": 640,
+        "wires": []
     }
 ]
